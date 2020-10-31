@@ -129,3 +129,32 @@ type UnitsValue struct {
 }
 
 ```
+## addition
+(1) if a key start with "?" , the program will think it is a comment
+
+(2) if a key start with "!",the program will think its value is type name of the key without "!"
+
+### examples
+```json
+{
+    "!data":"map[string]string",
+    "?data":"this is data",
+    "data":{
+        "A":"a",
+        "B":"b"
+    },
+    "data2":{
+        "A":"a",
+        "B":"b"
+    }
+}
+```
+```go
+type Document struct {
+        Data    map[string]string       `json:"data"`
+        Data2   struct {
+                A       string  `json:"A"`
+                B       string  `json:"B"`
+        }       `json:"data2"`
+}
+```

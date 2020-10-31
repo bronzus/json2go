@@ -217,3 +217,17 @@ func (n nodeMapType) expands(n2 nodeType) bool {
 func (n nodeMapType) fit(v interface{}) nodeType {
 	return n
 }
+
+type nodeOtherType string
+
+func (n nodeOtherType) id() string {
+	return string(n)
+}
+
+func (n nodeOtherType) expands(n2 nodeType) bool {
+	return n == n2
+}
+
+func (n nodeOtherType) fit(v interface{}) nodeType {
+	return n
+}

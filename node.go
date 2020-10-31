@@ -3,6 +3,7 @@ package json2go
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"sort"
 )
 
@@ -33,6 +34,7 @@ func newNode(key string) *node {
 	}
 }
 
+// grow
 func (n *node) grow(input interface{}) {
 	if input == nil {
 		n.nullable = true
@@ -117,7 +119,36 @@ func (n *node) growChildrenFromData(in interface{}) {
 
 	alreadyHasChildren := (n.children != nil)
 	usedKeys := make(map[string]bool)
+
+	for k := range obj {
+		if specialChar(string([]rune(k)[0])) == typeName {
+			tmpK := string([]rune(k)[1:])
+			if _, ok := obj[tmpK]; ok {
+				child, _ := n.getOrCreateChild(tmpK)
+				child.required = true
+				child.children = nil
+				typeName, ok := obj[k].(string)
+				if !ok {
+					log.Println("warn", "!xxx should be string")
+					child.t = nodeOtherType("interface{}")
+				} else {
+					child.t = nodeOtherType(typeName)
+				}
+				// child.nullable = false
+				usedKeys[tmpK] = true
+				delete(obj, k)
+				delete(obj, tmpK)
+			}
+		}
+	}
+
 	for k, v := range obj {
+		// ----新添加代码---
+		if specialChar(string([]rune(k)[0])) == comment {
+			continue
+		}
+		// -------
+
 		child, created := n.getOrCreateChild(k)
 		if created && alreadyHasChildren {
 			child.required = false

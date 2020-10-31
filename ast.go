@@ -71,6 +71,9 @@ func astTypeFromNode(n *node, opts options) ast.Expr {
 			Value: ve,
 		}
 		allowPointer = false
+	case nodeOtherType:
+		resultType = ast.NewIdent(n.t.id())
+		allowPointer = false
 	default:
 		panic(fmt.Sprintf("unknown type: %v", n.t))
 	}
@@ -129,11 +132,13 @@ func astStructTypeFromNode(n *node, opts options) *ast.StructType {
 func astJSONTag(key string, omitempty bool) *ast.BasicLit {
 	tag := fmt.Sprintf("%#v", key)
 	tag = strings.Trim(tag, `"`)
-	if omitempty {
-		tag = fmt.Sprintf("`json:\"%s,omitempty\"`", tag)
-	} else {
-		tag = fmt.Sprintf("`json:\"%s\"`", tag)
-	}
+	// if omitempty {
+	// 	tag = fmt.Sprintf("`json:\"%s,omitempty\"`", tag)
+	// } else {
+	// 	tag = fmt.Sprintf("`json:\"%s\"`", tag)
+	// }
+
+	tag = fmt.Sprintf("`%s:\"%s\"`", tagName, tag)
 
 	return &ast.BasicLit{
 		Value: tag,
