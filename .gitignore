@@ -2,3 +2,5 @@
 build/
 /json2go
 /test
+/cmd
+/rmf.sh
